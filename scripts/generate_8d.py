@@ -1308,7 +1308,7 @@ def set_cell_borders(cell):
     for border_name in ['top', 'left', 'bottom', 'right']:
         border = OxmlElement(f'w:{border_name}')
         border.set(qn('w:val'), 'single')
-        border.set(qn('w:sz'), '4')
+        border.set(qn('w:sz'), '16')  # 2磅边框
         border.set(qn('w:color'), '000000')
         tc_borders.append(border)
     tc_pr.append(tc_borders)
@@ -1351,11 +1351,11 @@ def add_heading(doc, text, level=1):
     p.paragraph_format.space_after = Pt(6)
     run = p.add_run(text)
     if level == 1:
-        set_run_font(run, size=14, bold=True, color=HEADER_FILL)
+        set_run_font(run, size=14, bold=True, color="000000")
     elif level == 2:
-        set_run_font(run, size=12, bold=True, color=SUBHEADER_FILL)
+        set_run_font(run, size=12, bold=True, color="000000")
     else:
-        set_run_font(run, size=11, bold=True, color="333333")
+        set_run_font(run, size=11, bold=True, color="000000")
     return p
 
 
@@ -1385,13 +1385,13 @@ def add_table(doc, headers, rows, col_widths_cm=None, root_cause_row_indices=Non
     for i, header in enumerate(headers):
         cell = hdr_cells[i]
         cell.text = ""
-        set_cell_bg(cell, HEADER_FILL)
+        set_cell_bg(cell, "FFFFFF")  # 表头底纹白色
         set_cell_borders(cell)
         cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
         p = cell.paragraphs[0]
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         run = p.add_run(header)
-        set_run_font(run, size=10.5, bold=True, color="FFFFFF")
+        set_run_font(run, size=10.5, bold=True, color="000000")
 
     # 数据行
     for r_idx, row_data in enumerate(rows):
@@ -1401,9 +1401,9 @@ def add_table(doc, headers, rows, col_widths_cm=None, root_cause_row_indices=Non
             cell = row_cells[c_idx]
             cell.text = ""
             if is_rc:
-                set_cell_bg(cell, ROOT_CAUSE_FILL)
+                set_cell_bg(cell, "FFFFFF")  # 根因行底纹白色
             elif r_idx % 2 == 1:
-                set_cell_bg(cell, ALT_ROW_FILL)
+                set_cell_bg(cell, "FFFFFF")  # 交替行底纹白色
             set_cell_borders(cell)
             cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
             p = cell.paragraphs[0]
@@ -1425,20 +1425,20 @@ def add_kv_table(doc, kv_pairs, label_width_cm=4.5, value_width_cm=12):
         label_cell = table.rows[i].cells[0]
         label_cell.width = Cm(label_width_cm)
         label_cell.text = ""
-        set_cell_bg(label_cell, SUBHEADER_FILL)
+        set_cell_bg(label_cell, "FFFFFF")  # 标签列底纹白色
         set_cell_borders(label_cell)
         label_cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
         p = label_cell.paragraphs[0]
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         run = p.add_run(label)
-        set_run_font(run, size=10, bold=True, color="FFFFFF")
+        set_run_font(run, size=10, bold=True, color="000000")
 
         # 值列
         value_cell = table.rows[i].cells[1]
         value_cell.width = Cm(value_width_cm)
         value_cell.text = ""
         if i % 2 == 1:
-            set_cell_bg(value_cell, ALT_ROW_FILL)
+            set_cell_bg(value_cell, "FFFFFF")  # 值列交替行底纹白色
         set_cell_borders(value_cell)
         value_cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
         p = value_cell.paragraphs[0]
@@ -1475,7 +1475,7 @@ def set_page_header(doc, report_number):
     p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     # report_number 已包含 8D- 前缀，无需重复添加
     run = p.add_run(report_number)
-    set_run_font(run, size=9, color="666666")
+    set_run_font(run, size=9, color="000000")
 
 
 def generate_word(context, template, output_path, report_number, auto_fill=False):
@@ -1503,14 +1503,14 @@ def generate_word(context, template, output_path, report_number, auto_fill=False
     title_p.paragraph_format.space_before = Pt(6)
     title_p.paragraph_format.space_after = Pt(12)
     title_run = title_p.add_run("8D 问题解决报告")
-    set_run_font(title_run, size=20, bold=True, color=HEADER_FILL)
+    set_run_font(title_run, size=20, bold=True, color="000000")
 
     # 报告编号
     sub_p = doc.add_paragraph()
     sub_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     sub_p.paragraph_format.space_after = Pt(6)
     sub_run = sub_p.add_run(f"报告编号：{report_number}    生成日期：{datetime.datetime.now().strftime('%Y-%m-%d')}")
-    set_run_font(sub_run, size=10, color="666666")
+    set_run_font(sub_run, size=10, color="000000")
 
     # ============ 一、D0-D2 问题基本信息 ============
     add_heading(doc, "一、D0-D2 问题基本信息与团队组建", level=1)
@@ -1841,7 +1841,7 @@ def generate_word(context, template, output_path, report_number, auto_fill=False
     end_p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     end_p.paragraph_format.space_before = Pt(12)
     end_run = end_p.add_run(f"8D 报告编号：{report_number}")
-    set_run_font(end_run, size=9, color="666666")
+    set_run_font(end_run, size=9, color="000000")
 
     # 自动填充模式：遍历所有表格，把 ____ 替换为合理示例值
     if auto_fill:
